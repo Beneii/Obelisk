@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg-canvas: #0b0e13;
+  --bg-elev-1: #10141b;
+  --bg-elev-2: #151b24;
+  --line-soft: rgba(148, 163, 184, 0.14);
+  --text-primary: #e5e7eb;
+  --text-muted: #94a3b8;
+
+  --status-success: #7bd88f;
+  --status-warning: #f6d365;
+  --status-error: #ff7a7a;
+  --status-info: #6aa9ff;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(100, 116, 139, 0.45);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at 20% 0%, #161c27 0%, var(--bg-canvas) 42%);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.panel {
+  background: color-mix(in oklab, var(--bg-elev-1) 94%, #fff 6%);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(2, 8, 20, 0.28);
+}
