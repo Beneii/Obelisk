@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: obelisk
+      POSTGRES_PASSWORD: obelisk
+      POSTGRES_DB: obelisk
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    environment:
+      OBELISK_DATABASE_URL: postgresql+psycopg://obelisk:obelisk@postgres:5432/obelisk
+      OBELISK_REDIS_URL: redis://redis:6379/0
+      OBELISK_CORS_ORIGINS: '["http://localhost:5173"]'
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+      VITE_WS_URL: ws://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
