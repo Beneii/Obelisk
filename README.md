@@ -1,57 +1,96 @@
-# OBELISK MISSION CONTROL
+# Obelisk
 
-Obelisk Mission Control is a local-first AI orchestration workspace that behaves like a compact engineering company: CEO commands in, autonomous agents coordinate project execution out.
+Local-first AI orchestration workspace. You describe work in a command console; the app turns that into projects, tasks, and agent-coordinated execution with a realtime activity feed.
 
-## Tech Stack
-- Backend: FastAPI, SQLAlchemy, PostgreSQL, Redis, pgvector, Alembic
-- Frontend: React + Vite + TypeScript + TailwindCSS, Zustand, TanStack Query
-- Realtime: WebSockets
-- Environment: Docker Compose
+Built as a hiring-visible systems sample: FastAPI + PostgreSQL + Redis + React, runnable with Docker Compose.
 
-## Features Implemented
-- Multi-project management APIs and dashboard project list
-- Brain dump ingestion endpoint that generates structured tasks
-- Task board with status columns (`pending`, `active`, `blocked`, `completed`)
-- Agent model set (CTO, Research, Builder, QA, Memory, Watcher)
-- Task thread message model/API for typed agent communications
-- Worker adapters for Codex CLI and Claude Code CLI command execution
-- Task run persistence including prompt versioning and stdout/stderr capture
-- Memory store and searchable memory entries
-- Watcher loop running every minute for stalled task detection
-- Realtime activity broadcasting over WebSockets
-- Dockerized local development (`docker compose up`)
+## Stack
 
-## Repository Layout
+| Layer | Tech |
+|-------|------|
+| Backend | FastAPI, SQLAlchemy, Alembic, PostgreSQL (pgvector image), Redis |
+| Frontend | React, Vite, TypeScript, Tailwind CSS, Zustand, TanStack Query |
+| Realtime | WebSockets |
+| Workers | CLI adapters for Codex and Claude Code (shell out with captured stdout/stderr) |
+| Runtime | Docker Compose |
+
+## What works today
+
+- Multi-project APIs and a dashboard project list
+- Brain-dump endpoint that derives goals/tasks from free text (heuristic CTO agent path)
+- Task board statuses: `pending`, `active`, `blocked`, `completed`
+- Agent roles modelled in code: CTO, Research, Builder, QA, Memory, Watcher
+- Task thread messages for typed agent communication
+- Task run persistence (prompt, worker, stdout/stderr, status)
+- Memory store with searchable entries (embedding column present; full semantic search pipeline listed under hardening)
+- Watcher loop every 60s for stalled tasks, broadcast over WebSockets
+- `docker compose up --build` for local stack
+
+This is a working baseline, not a production multi-tenant product. Auth, durable job queues, and a full embedding search pipeline are still open work.
+
+## Repository layout
+
 ```
-obelisk/
-  backend/
-  frontend/
-  docker/
-  scripts/
+Obelisk/
+  backend/          FastAPI app, Alembic migrations, agents, workers
+  frontend/         Vite React UI (Mission Control)
+  scripts/dev.sh    Convenience wrapper for compose
   docker-compose.yml
-  README.md
+  docs/screenshots/ Place screenshots or GIFs here
 ```
 
-## Run Locally
+## How to run
+
+Requirements: Docker and Docker Compose.
+
 ```bash
+git clone https://github.com/Beneii/Obelisk.git
+cd Obelisk
 docker compose up --build
 ```
 
-Endpoints:
-- Frontend: http://localhost:5173
-- Backend: http://localhost:8000
-- Backend docs: http://localhost:8000/docs
+Or: `./scripts/dev.sh`
 
-## Example Workflow
-1. In command console, run `create project Lumina`.
-2. Select project in sidebar.
-3. Run `brain dump I want Lumina to sync Canvas assignments and build an AI planner`.
-4. Watch generated tasks appear and realtime events stream in the activity feed.
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend API | http://localhost:8000 |
+| OpenAPI docs | http://localhost:8000/docs |
+| Postgres | localhost:5432 (user/db/password `obelisk` for local only) |
+| Redis | localhost:6379 |
 
-## Notes on Production Hardening
-This baseline includes modular architecture and core orchestration loops. For hardened production rollout, add:
+Compose sets local DB credentials for development. Do not reuse them outside this sandbox.
+
+## Example workflow
+
+1. In the command console: `create project Lumina`
+2. Select the project in the sidebar
+3. Run a brain dump, e.g. `brain dump I want Lumina to sync Canvas assignments and build an AI planner`
+4. Watch tasks appear and activity events stream in the feed
+
+## Screenshots
+
+Add captures under `docs/screenshots/` and link them here.
+
+```
+docs/screenshots/mission-control.png   # task board + activity feed
+docs/screenshots/command-console.png   # brain dump / create project
+```
+
+*(Placeholders until screenshots are added.)*
+
+## Hardening backlog (not claimed as done)
+
 - AuthN/AuthZ and audit trails
-- Pgvector embedding pipeline + semantic search
-- Durable background queues (Celery/RQ)
-- Rich diff viewer and task-branch merge approval workflow in UI
-- Full integration/unit test matrix and CI pipelines
+- pgvector embedding pipeline + semantic memory search end-to-end
+- Durable background queues (Celery/RQ or similar)
+- Richer diff viewer and merge approval in the UI
+- Broader automated test matrix and CI
+
+## Topics
+
+Suggested GitHub topics: `fastapi`, `postgresql`, `pgvector`, `redis`, `docker`, `typescript`, `react`, `agents`, `websockets`
+
+## License
+
+Personal portfolio project. Ask before forking for commercial use.
